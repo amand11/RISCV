@@ -1,0 +1,37 @@
+.data
+var1: .asciiz "r"
+.text
+lui x3,65536
+addi x20,x0,-1
+beq x0,x0,main_prog
+find_len: addi x2,x2,-12
+sw x4,0(x2)
+sw x5,4(x2)
+sw x6,8(x2)
+addi x4,x0,0
+startloop: add x5,x4,x3
+lw x6,0(x5)
+beq x6,x20,endloop
+addi x4,x4,1
+beq x0,x0,startloop
+endloop: add x10,x0,x4
+lw x4,0(x2)
+lw x5,4(x2)
+lw x6,8(x2)
+jalr x0,0(x1)
+main_prog: jal x1,find_len
+addi x4,x0,0
+addi x10,x10,-1
+addi x8,x0,1
+startloop1: bge x4,x10,endloop1
+add x5,x3,x4
+lb x6,0(x5)
+add x5,x3,x10
+lb x7,0(x5)
+beq x6,x7,endif
+addi x8,x0,0
+beq x0,x0,endloop1
+endif: addi x4,x4,1
+addi x10,x10,-1
+beq x0,x0,startloop1
+endloop1:

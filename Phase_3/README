@@ -1,0 +1,96 @@
+================================================
+Functional Simulator for RISCV Processor
+================================================
+
+README
+
+CS-204 project, RISC-V SIMULATOR, Phase 2, GROUP :-
+Languages:- C++
+
+TEAM MEMBERS:- 
+        *Prateek Saini (2018CSB1114)
+	*Naveen Yadav  (2018CSB1106)
+	*Aman Dhawan   (2018CSB1070)
+	*Vikram Singh  (2018CSB1194)
+	*Vishal Yadav  (2018CSB1128)
+
+Phase 2:-
+Implemented pipeline structure of 32bit RISC-V instruction execution with and without data forwarding and one bit-predictor.
+ 
+Table of contents
+
+1. Directory Structure
+2. How to execute
+
+
+Directory Structure:
+--------------------
+CS112-Project
+  |
+  |- src
+      |- main.cpp
+      |- example.txt
+
+  |- test
+      |- count.txt
+      |- bubblesort.txt
+      |- fibonacci.txt
+      |- palindrome.txt
+      |- factorial.txt
+      |- Assembly Lang Code(Contains assembly code of above program)
+  |- Project-statement.txt
+  |- README
+     
+
+
+HOW TO RUN:-
+------------
+	Build the Program	
+		$cd src
+		$make
+	
+	Write Your input in .mc filed named "example.txt"	
+
+        On the terminal :-
+        g++ main.cpp
+        ./a.out
+	Now you have to choose for using pipelining version or not by entering 1 or o
+	if you choose pipeling then you further have to choose to use data forwarding or 	not. Or one but predictor or not.
+	You will get your desired output in terminal.
+
+
+Work by Indviduals:-
+------------
+
+Prateek Saini -> Stalling 
+	     ->	One Bit Predictor
+
+Naveen Yadav -> Stalling 
+	     ->	Data Forwarding
+	     -> overall structure of code(main.cpp)
+
+Aman Dhawan -> One Bit Predictor , 
+            -> Readme and Documentation .
+
+Algorithm and Methodology -> 
+We have implemented pipelining in our RISC v simulator which supports data forwarding and one but predictor. We have know to control them
+
+
+
+Assumption:-
+1)ld and sd is not supported and will throw error with message that they are not available.
+2)Input document("example.txt") should not have extra and empty line at the end.
+3)Structure of input files should be
+	I).text with program counter and machine code separated by single space. Format is "Program-counter machine-code", both machine code and program counter are in hex
+	II)The to end .text, well have Program counter and string("END PROGRAM"), serrated by single space.
+	III)Then .Data component should be there, and last data type should be word(because of some limitation). format is “Location data”, location and data is in hex
+
+
+Test plan
+We test the simulator with following assembly programs:
+Simple Sum
+Bubble Sort
+Fibonacci Program
+Sum of the array of N elements. Initialise an array in first loop with each element equal to its index. In second loop find the sum of this array, and store the result at Arr[N].   
+Palindrome
+

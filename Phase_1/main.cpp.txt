@@ -1,0 +1,1704 @@
+#include <bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <map>
+#include <string>
+#include <string.h>
+#include <vector>
+using namespace std;
+
+string lookup(string word)
+{
+    if(word=="0000") return "0";
+    if(word=="0001") return "1";
+    if(word=="0010") return "2";
+    if(word=="0011") return "3";
+    if(word=="0100") return "4";
+    if(word=="0101") return "5";
+    if(word=="0110") return "6";
+    if(word=="0111") return "7";
+    if(word=="1000") return "8";
+    if(word=="1001") return "9";
+    if(word=="1010") return "A";
+    if(word=="1011") return "B";
+    if(word=="1100") return "C";
+    if(word=="1101") return "D";
+    if(word=="1110") return "E";
+    if(word=="1111") return "F";
+}
+string tookup(int word)
+{
+    if(word==0) return "0";
+    if(word==1) return "1";
+    if(word==2) return "2";
+    if(word==3) return "3";
+    if(word==4) return "4";
+    if(word==5) return "5";
+    if(word==6) return "6";
+    if(word==7) return "7";
+    if(word==8) return "8";
+    if(word==9) return "9";
+    if(word==10) return "A";
+    if(word==11) return "B";
+    if(word==12) return "C";
+    if(word==13) return "D";
+    if(word==14) return "E";
+    if(word==15) return "F";
+    else return "";
+}
+int identity(string input){
+    if(input=="0"){return 0;}if(input=="1"){return 1;}if(input=="2" || input=="sp"){return 2;}if(input=="3"){return 3;}if(input=="4"){return 4;}if(input=="5"){return 5;}
+    if(input=="6"){return 6;}if(input=="7"){return 7;}if(input=="8"){return 8;}if(input=="9"){return 9;}if(input=="10"){return 10;}if(input=="11"){return 11;}if(input=="12"){return 12;}if(input=="13"){return 13;}
+    if(input=="14"){return 14;}if(input=="15"){return 15;}if(input=="16"){return 16;}if(input=="17"){return 17;}if(input=="18"){return 18;}if(input=="19"){return 19;}if(input=="20"){return 20;}if(input=="21"){return 21;}
+if(input=="22"){return 22;}if(input=="23"){return 23;}if(input=="24"){return 24;}if(input=="25"){return 25;}
+    if(input=="26"){return 26;}if(input=="27"){return 27;}if(input=="28"){return 28;}if(input=="29"){return 29;}if(input=="30"){return 30;}if(input=="31"){return 31;}
+}
+
+void delete_line(const char *file_name)
+{
+  ifstream is(file_name);
+  ofstream ofs;
+  ofs.open("temp.txt", ofstream::out);
+  char c;
+  int line_no = 1;
+
+  int flag=0;
+  int flag1=0;
+  int counter=0;
+  int only_comment=0;
+  while (is.get(c))
+  {
+      if(counter==1)
+        {
+            if(c=='\n')
+            {
+                counter=0;
+                continue;
+            }
+            counter=0;
+            ofs<<c;
+        }
+      if(c=='\n')
+        {
+
+            if(flag==1)
+            {
+                flag=0;
+                continue;
+            }
+            if(flag1==1)
+            {
+                ofs<<'\n';
+                flag1=0;
+                continue;
+            }
+            continue;
+        }
+        if(flag==1) continue;
+        if(c=='#')
+        {
+            flag=1;
+            continue;
+        }
+        if(c==':')
+        {
+            ofs<<":";
+            only_comment=1;
+            counter++;
+            continue;
+        }
+        ofs<<c;
+        only_comment=1;
+        flag1=1;
+
+  }
+  ofs.close();
+  is.close();
+  remove(file_name);
+  rename("temp.txt", file_name);
+}
+
+string r_code(string func7, string  rs2, string rs1,string func3, string rd, string  opcode )
+{
+        string arr="";
+    arr=arr+func7+rs2+rs1+func3+rd+opcode;
+    return arr;
+}
+string i_code(string imm,string rs1,string func3,string rd,string opcode)
+{
+    string arr="";
+    arr=arr+imm+rs1+func3+rd+opcode;
+    return arr;
+}
+
+string s_code(string imm, string rs2,  string rs1, string func3, string opcode){
+    string arr = "";
+    string k = imm.substr(0, 7);
+    string l = imm.substr(7,5);
+    arr = arr+ k + rs2 + rs1 +func3 + l + opcode;
+    return arr;
+}
+
+string u_code(string imm, string rd, string opcode){
+    string arr = "";
+    arr = arr+ imm + rd + opcode;
+    return arr;
+}
+string sb_code(string imm,string rs1,string rs2,string func3,string opcode)
+{
+    string arr="";
+    string t1="";
+    string t2="";
+    string t3="";
+    string t4="";
+    t1=imm[0];
+    t2=imm.substr(2,6);
+    t3=imm.substr(8,4);
+    t4=imm[1];
+    arr=arr+t1+t2+rs2+rs1+func3+t3+t4+opcode;
+    //cout<<arr<<endl;
+    return arr;
+}
+string uj_code(string imm,string rd,string opcode)
+{
+    //20,10:1,11,19:12
+    string arr="";
+    string t1="";
+    string t2="";
+    string t3="";
+    string t4="";
+    t1=imm[0];
+    t2=imm.substr(10,10);
+    t3=imm[9];
+    t4=imm.substr(1,8);
+    arr=arr+t1+t2+t3+t4+rd+opcode;
+    return arr;
+}
+string dec_to_hexdecimal(int n){
+    int k=n; string ans="";
+    if(k==0){
+        return "0x00000000";
+    }
+    while(k!=0){
+
+            ans = tookup(k%16)+ans;
+            k=k/16;
+
+    }
+    int lp = ans.size();
+    if(lp<8){
+        for(int i=0; i<8-lp; i++){
+            ans = "0"+ans;
+        }
+    }
+    else if(lp>8){
+        ans = ans.substr(lp-8,8);
+    }
+    ans = "0x"+ans;
+    return ans;
+}
+string bintohex(string arr)
+{
+    string word="";
+    string answer="0x";
+    for(int i=0;i<32;i++)
+    {
+        word=word+arr[i];
+        if((i+1)%4==0)
+        {
+            answer=answer+lookup(word);
+            word="";
+        }
+
+    }
+    return answer;
+}
+string decToBinary(int n)
+{
+    string binaryNum="00000";
+    int i;
+     i = 4;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+
+string decToBinary32(int n)
+{
+    string binaryNum="00000000000000000000";
+    int i;
+     i = 19;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+string decToBinary21(int n)
+{
+    string binaryNum="000000000000000000000";
+    int i;
+     i = 20;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+string decToBinary12(int n)
+{
+    string binaryNum="000000000000";
+    int i;
+
+
+     i = 11;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+string decToBinary13(int n)
+{
+    string binaryNum="0000000000000";
+    int i;
+     i = 12;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+
+int labellineno(string abc)
+{
+    int line_nolabel=0;
+  string abd=":";
+  if( abc!=".text" && abc!=".data")
+  {
+    abc=abc+abd;
+  }
+  int r3=0;
+  string line;
+    ifstream fin1("sample.txt");
+    while( getline(fin1,line))
+    {
+      line_nolabel++;
+        std:: istringstream iss(line);
+        do
+        {
+          string ter; iss >> ter;
+            if(ter==abc)
+            {
+              r3=1;
+              return line_nolabel;
+            }
+        } while (iss);
+    }
+    return -1;
+}
+
+string addBinary(string a, string b)
+{
+    a="00010000000000000000000000000000";
+    string result = "";
+    int s = 0;
+    int i = a.size() - 1, j = b.size() - 1;
+    while (i >= 0 || j >= 0 || s == 1)
+    {
+        s += ((i >= 0)? a[i] - '0': 0);
+        s += ((j >= 0)? b[j] - '0': 0);
+        result = char(s % 2 + '0') + result;
+        s /= 2;
+        i--; j--;
+    }
+    return result;
+}
+
+string decimaltobinaryin32bit(int n)
+{
+    string binaryNum="00000000000000000000000000000000";
+    int i;
+
+
+     i = 31;
+    while (n > 0) {
+        int temp=(n % 2);
+        if(temp==0) binaryNum[i]='0';
+        else binaryNum[i]='1';
+        n = n / 2;
+        i--;
+    }
+    return binaryNum;
+}
+
+
+int main()
+{
+
+    int i_formatrange[2];
+    int sb_formatrange[2];
+    int uj_formatrange[2];
+
+    int range1=1;
+    int range2=1;
+    for(int i=1;i<=11;i++) range1=range1*2;
+    for(int i=1;i<=19;i++) range2=range2*2;
+
+    i_formatrange[0]=-range1;
+    i_formatrange[1]=range1-1;
+    sb_formatrange[0]=-range1;
+    sb_formatrange[1]=range1;
+    uj_formatrange[0]=-range2;
+    uj_formatrange[1]=range2;
+
+    map <string ,int> to_datatype;
+    string hah;
+    hah=".byte";
+    to_datatype[hah]=1;
+    hah=".half";
+    to_datatype[hah]=2;
+    hah=".word";
+    to_datatype[hah]=4;
+    hah=".dword";
+    to_datatype[hah]=8;
+    hah=".asciiz";
+    to_datatype[hah]=1;
+
+
+    ifstream fin;
+    ofstream myfile;
+    string line;
+    int count=0;
+    int intezer_for_memory_write=0;
+    string extra="0x";
+    int curr_line=0;
+    //delete_line("sample.txt");
+    myfile.open ("example.mc");
+    int memory_array[10000][2];
+    for(int i=0;i<10000;i++)
+    {
+        memory_array[i][1]=-1;
+    }
+    fin.open("sample.txt");
+    int flagy=0;
+    string word="";
+    string rs1="",rs2="",rd="",imm="";
+
+
+    while(fin.eof()==false)
+    {
+      getline(fin,line);
+      curr_line++;
+      cout<<line<<endl;
+      word="";
+      //line[line.length()]=',';
+      //line[line.length()+1]='\0';
+      int where_first_break=0;
+      int how_many_time=0;
+      for(int i=0;i<line.length();i++)
+      {
+            if(line[i]==' ')
+            {
+              if(how_many_time==0)
+              continue;
+              else
+              {
+                where_first_break=i;
+                break;
+              }
+            }
+            word=word+line[i];
+            how_many_time++;
+      }
+
+
+      if(word==".text")
+      {
+          flagy=0;
+          continue;
+      }
+
+
+      if(word==".data"||flagy==1)
+        {
+          if(flagy==0)
+          {
+            flagy=1;
+            continue;
+          }
+          int iiindex1;
+          for(int i=0;i<line.length();i++)
+          {
+            if(line[i]==':')
+            {
+              iiindex1=i;
+              break;
+            }
+          }
+          string to_find_type="";
+          int iiindex;
+          for(int i=iiindex1+1;i<line.length();i++)
+          {
+            if(line[i]==' ') continue;
+            else to_find_type=to_find_type+line[i];
+            if(to_find_type==".byte"||to_find_type==".half"||to_find_type==".word"||to_find_type==".dword"||to_find_type==".asciiz")
+            {
+                iiindex=i;
+                break;
+            }
+          }
+          string value="";
+          int flag_many=0;
+          if(to_find_type==".asciiz")
+          {
+              for(int i=iiindex+1;i<line.length();i++)
+              {
+                  if(line[i]==' ')
+                  {
+                      if(flag_many==0) continue;
+                  }
+                  if(line[i]=='"')
+                  {
+
+                      if(flag_many==0)
+                      {
+                          flag_many++;
+                          continue;
+                      }
+                      if(i==line.length()-1) break;
+                      else
+                      {
+                          memory_array[intezer_for_memory_write][0]=line[i];
+                          memory_array[intezer_for_memory_write][1]=to_datatype[to_find_type];
+                          intezer_for_memory_write++;
+                          flag_many=1;
+                      }
+                  }
+                  else
+                  {
+                        memory_array[intezer_for_memory_write][0]=line[i];
+                        memory_array[intezer_for_memory_write][1]=to_datatype[to_find_type];
+                        intezer_for_memory_write++;
+                  }
+              }
+          }
+          if(to_find_type==".asciiz") continue;
+          for(int i=iiindex+1;i<line.length();i++)
+          {
+              if(line[i]==' ')
+              {
+                  if(flag_many==0) continue;
+                  else
+                  {
+                        int  ll=value.size();
+
+                        int finalnum=0;
+                        if(value[0]=='-')
+                        {
+                            int arr[ll-1];
+                            for(int i=1;i<ll;i++)
+                            {
+                                arr[ll-i-1]=value[i]-48;
+                            }
+                            int mmm=1;
+                            for(int i=0;i<ll-1;i++)
+                            {
+                                finalnum=finalnum+arr[i]*mmm;
+                                mmm=10*mmm;
+                            }
+                        }
+                        else
+                        {
+                            int arr[ll];
+                            for(int i=0;i<ll;i++)
+                            {
+                                arr[ll-i-1]=value[i]-48;
+                            }
+                            int mmm=1;
+                            for(int i=0;i<ll;i++)
+                            {
+                                finalnum=finalnum+arr[i]*mmm;
+                                mmm=10*mmm;
+                            }
+                        }
+                        memory_array[intezer_for_memory_write][0]=finalnum;
+                        memory_array[intezer_for_memory_write][1]=to_datatype[to_find_type];
+                        intezer_for_memory_write++;
+                        value="";
+                        finalnum=0;
+                        flag_many=0;
+                        continue;
+                  }
+              }
+              else
+              {
+                value=value+line[i];
+                flag_many=1;
+              }
+          }
+                int  ll=value.length();
+                int finalnum=0;
+                        if(value[0]=='-')
+                        {
+                            int arr[ll-1];
+                            for(int i=1;i<ll;i++)
+                            {
+                                arr[ll-i-1]=value[i]-48;
+                            }
+                            int mmm=1;
+                            for(int i=0;i<ll-1;i++)
+                            {
+                                finalnum=finalnum+arr[i]*mmm;
+                                mmm=10*mmm;
+                            }
+                        }
+                        else
+                        {
+                            int arr[ll];
+                            for(int i=0;i<ll;i++)
+                            {
+                                arr[ll-i-1]=value[i]-48;
+                            }
+                            int mmm=1;
+                            for(int i=0;i<ll;i++)
+                            {
+                                finalnum=finalnum+arr[i]*mmm;
+                                mmm=10*mmm;
+                            }
+                        }
+                        //cout<<finalnum<<endl;
+                        memory_array[intezer_for_memory_write][0]=finalnum;
+                        memory_array[intezer_for_memory_write][1]=to_datatype[to_find_type];
+                        intezer_for_memory_write++;
+                        value="";
+                        finalnum=0;
+                        flag_many=0;
+                        continue;
+        }
+        int xyxy=0;
+        if(word[word.length()-1]==':')
+        {
+          word="";
+          for(int i=where_first_break+1;i<line.length();i++)
+          {
+            if(line[i]==' ')
+            {
+              if(xyxy==0) continue;
+              else
+              {
+                where_first_break=i;
+                break;
+              }
+            }
+            word=word+line[i];
+            xyxy=1;
+          }
+        }
+        //cout<<word<<"     "<<"hi"<<endl;
+        xyxy=0;
+        rd=""; rs1=""; rs2="",imm="";
+        if(word=="jal")
+        {
+            string error_line="";
+            for(int i=where_first_break-3;i<line.length();i++) error_line=error_line+line[i];
+            string label="";
+            int lindex;
+            int chhl=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]==',')
+                {
+                    lindex=i;
+                    chhl=0;
+                    break;
+                }
+                if(chhl==1)
+                {
+                    rd=rd+line[i];
+                }
+                if(line[i]=='x')
+                {
+                    chhl=1;
+                    continue;
+                }
+            }
+            for(int i=lindex+1;i<line.length();i++)
+            {
+                if(line[i]==' '||line[i]=='\t')
+                {
+                    if(chhl==0) continue;
+                    else
+                    {
+                        chhl=0;
+                        break;
+                    }
+                }
+                else
+                    label=label+line[i];
+
+                chhl=1;
+            }
+            int labelno=labellineno(label);
+            if(labelno==-1)
+            {
+                cout<<"Line no.-"<<curr_line<<"    Line-"<<error_line<<"    "<<"Label not defined"<<"  "<<"Label-"<<label;
+                exit(0);
+            }
+            //cout<<labelno<<" "<<curr_line<<endl;
+            int difference;
+            difference=labelno-curr_line;
+            difference=difference*4;
+            if(difference<uj_formatrange[0]||difference>uj_formatrange[1])
+            {
+                cout<<"Line no.-"<<curr_line<<" Immediate Value out of range"<<endl;
+                exit(0);
+            }
+            //cout<<difference<<endl;
+            int hi=0;
+            string bin1,bin2,bin;
+            if(difference<0)
+            {
+                difference=-difference;
+                hi=1;
+            }
+            imm=decToBinary21(difference);
+            if(hi==1)
+            {
+                int swapping=0;
+                  bin2=decToBinary21(difference);
+                  for(int i=bin2.length()-1;i>=0;i--)
+                  {
+                      if(swapping==1)
+                      {
+                          if(bin2[i]=='1')
+                          {
+                              bin2[i]='0';
+                              continue;
+                          }
+                          if(bin2[i]=='0')
+                          {
+                              bin2[i]='1';
+                              continue;
+                          }
+                      }
+                      if(bin2[i]=='1')
+                      {
+                          swapping=1;
+                      }
+
+                  }
+            }
+            //string func3;
+            string opcode;
+            string xx;
+            int rrr;
+            rrr=identity(rd);
+            bin=decToBinary(rrr);
+            opcode="1101111";
+            if(hi==0)
+            {
+                xx=uj_code(imm,bin,opcode);
+            }
+            if(hi==1)
+            {
+                xx=uj_code(bin2,bin,opcode);
+            }
+            //cout<<xx<<endl;
+            string output=bintohex(xx);
+            word="";
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+        }
+        xyxy=0;
+        rd=""; rs1=""; rs2="",imm="";
+        if(word=="beq"||word=="bne"||word=="bge"||word=="blt")
+        {
+            int lindex;
+            string label="";
+            string error_line="";
+            for(int i=where_first_break-3;i<line.length();i++) error_line=error_line+line[i];
+            for(int i=where_first_break;i<line.length();i++)
+            {
+              if(line[i]=='x') continue;
+              if(line[i]==' ')
+              {
+                if(xyxy==0) continue;
+              }
+              if(line[i]==',')
+              {
+                        lindex=i;
+                        xyxy=0;
+                        break;
+              }
+              rs1=rs1+line[i];
+              xyxy=1;
+            }
+            for(int i=lindex+1;i<line.length();i++)
+            {
+              if(line[i]=='x') continue;
+              if(line[i]==' ')
+              {
+                if(xyxy==0) continue;
+              }
+              if(line[i]==',')
+              {
+                  lindex=i;
+                  xyxy=0;
+                  break;
+              }
+                rs2=rs2+line[i];
+                xyxy=1;
+            }
+            for(int i=lindex+1;i<line.length();i++)
+            {
+                if(line[i]==' ')
+                {
+                  if(xyxy==0) continue;
+                  else
+                  {
+                    xyxy=0;
+                    break;
+                  }
+                }
+                label=label+line[i];
+                xyxy=1;
+            }
+            int labelno=labellineno(label);
+            if(labelno==-1)
+            {
+                cout<<"Line no.-"<<curr_line<<"    Line-"<<error_line<<"    "<<"Label not defined"<<"  "<<"Label-"<<label;
+                exit(0);
+            }
+            int differnce;
+            differnce=(labelno-curr_line)*4;
+            //cout<<labelno<<" "<<curr_line<<endl;
+            int hi=0;
+            string bin1,bin2,bin;
+            if(differnce<0)
+            {
+                hi=1;
+                differnce=-differnce;
+            }
+            //cout<<differnce<<endl;
+            if(differnce<sb_formatrange[0]||differnce>sb_formatrange[1])
+            {
+                cout<<"Line no.-"<<curr_line<<" Immediate Value out of range"<<endl;
+                exit(0);
+            }
+            imm=decToBinary13(differnce);
+            if(hi==1)
+            {
+                int swapping=0;
+                  bin2=decToBinary13(differnce);
+                  for(int i=bin2.length()-1;i>=0;i--)
+                  {
+                      if(swapping==1)
+                      {
+                          if(bin2[i]=='1')
+                          {
+                              bin2[i]='0';
+                              continue;
+                          }
+                          if(bin2[i]=='0')
+                          {
+                              bin2[i]='1';
+                              continue;
+                          }
+                      }
+                      if(bin2[i]=='1')
+                      {
+                          swapping=1;
+                      }
+
+                  }
+            }
+            string func3;
+            string opcode;
+            if(word=="beq")
+            {
+                func3="000";
+                opcode="1100011";
+            }
+            if(word=="bne")
+            {
+                func3="001";
+                opcode="1100011";
+            }
+            if(word=="blt")
+            {
+                func3="100";
+                opcode="1100011";
+            }
+            if(word=="bge")
+            {
+                func3="101";
+                opcode="1100011";
+            }
+            int r1,r2;
+            r1=identity(rs1);
+            r2=identity(rs2);
+            //cout<<r1<<"  "<<r2<<endl;
+            bin=decToBinary(r1);
+
+            bin1=decToBinary(r2);
+            string xx="";
+            //cout<<imm<<" "<<bin<<" "<<bin1<<" "<<func3<<" "<<opcode<<endl;
+            if(hi==0)
+            {
+              xx = sb_code(imm,bin,bin1,func3,opcode);
+            }
+            if(hi==1)
+            {
+              xx = sb_code(bin2,bin,bin1,func3,opcode);
+            }
+
+            string output=bintohex(xx);
+            word="";
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+
+        }
+
+        rd=""; rs1=""; rs2=""; imm="";
+        xyxy=0;
+        if(word=="add"||word=="and"||word=="or"||word=="sll"||word=="slt"||word=="sra"||word=="srl"||word=="sub"||word=="xor"||word=="mul"||word=="div"||word=="rem")
+        {
+            rd=""; rs1=""; rs2="";
+            int flag=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                 if(line[i]=='x')
+                 {
+                     for(int j=i+1;j<line.length();j++)
+                     {
+                         if(line[j]==',') break;
+                         if(flag==0) rd=rd+line[j];
+                     }
+                     flag++;
+                     if(flag==1) break;
+                 }
+            }
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]==',')
+                {
+                    for(int j=i+2;j<line.length();j++)
+                    {
+                        if(line[j]==',')
+                        {
+                            where_first_break=j;
+                            break;
+                        }
+                        rs1=rs1+line[j];
+                    }
+                    flag++;
+                    if(flag==2) break;
+                }
+            }
+            int chcc=0;
+            for(int i=where_first_break+2;i<line.length();i++)
+            {
+                if(line[i]==','||line[i]==' '||line[i]=='\t') break;
+                if(chcc==0)
+                {
+                    //cout<<line[i]<<endl;
+                    rs2=rs2+line[i];
+                }
+
+            }
+            //cout<<rs2<<" "<<rs2.length()<<endl;
+            int r1,r2,r;
+            r1=identity(rs1);
+            r2=identity(rs2);
+            r=identity(rd);
+            string bin1,bin2,bin;
+            bin1=decToBinary(r1);
+            bin2=decToBinary(r2);
+            bin=decToBinary(r);
+            string opcode,func3,func7;
+            if(word=="add"){
+            opcode="0110011";
+            func3="000";
+            func7="0000000";}
+            if(word=="and"){
+            opcode="0110011";
+            func3="111";
+            func7="0000000";}
+            if(word=="or"){
+            opcode="0110011";
+            func3="110";
+            func7="0000000";}
+            if(word=="sll"){
+            opcode="0110011";
+            func3="001";
+            func7="0000000";}
+            if(word=="slt"){
+            opcode="0110011";
+            func3="010";
+            func7="0000000";}
+            if(word=="sra"){
+            opcode="0110011";
+            func3="101";
+            func7="0100000";}
+            if(word=="srl"){
+            opcode="0110011";
+            func3="101";
+            func7="0000000";}
+            if(word=="sub"){
+            opcode="0110011";
+            func3="000";
+            func7="0100000";}
+            if(word=="xor"){
+            opcode="0110011";
+            func3="100";
+            func7="0000000";}
+            if(word=="mul"){
+                    opcode="0110011";
+                func3="000";
+                func7="0000001";
+            }
+            if(word=="div"){
+                func3="100";
+                opcode="0110011";
+            func7="0000001";
+            }
+            //cout<<func7<<" "<<bin2<<" "<<bin1<<" "<<func3<<" "<<bin<<" "<<opcode<<endl;
+            string xx=r_code(func7, bin2, bin1,func3,bin,opcode );
+            string output;
+            output=bintohex(xx);
+            //cout<<output<<endl;
+            word="";
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+
+        }
+
+        rd="";rs1="";rs2="";imm="";
+        xyxy=0;
+         if(word=="sb"||word=="sw"||word=="sd"||word=="sh")
+         {
+             if(word=="sd")
+             {
+                 cout<<"Command Not Supported"<<endl;
+                 exit(0);
+             }
+              int flag=0;
+              int index=0;
+              for(int i=where_first_break;i<line.length();i++)
+              {
+                  if(flag==2) break;
+                   if(line[i]=='x')
+                   {
+                       for(int j=i+1;j<line.length();j++)
+                       {
+                           if(line[j]==',') break;
+                           if(flag==0) rs1=rs1+line[j];
+                           index=j;
+                       }
+                       flag++;
+                       if(flag==1) break;
+                   }
+              }
+              for(int i=where_first_break;i<line.length();i++)
+              {
+                  if(line[i]==',')
+                  {
+                      for(int j=i+1;i<line.length();j++)
+                      {
+                          if(line[j]=='(') break;
+                          imm=imm+line[j];
+                      }
+                      flag++;
+                      if(flag==2)break;
+                  }
+              }
+              for(int i=where_first_break;i<line.length();i++)
+              {
+                  if(line[i]=='(')
+                  {
+                      for(int j=i+2;j<line.length();j++)
+                      {
+                          if(line[j]==')') break;
+                          rs2=rs2+line[j];
+                      }
+                      flag++;
+                      if(flag==3) break;
+                  }
+              }
+              int ll=imm.length();
+
+             string kk="";
+             for(int i=0; i<ll; i++){
+                 if(imm[i]=='0'||imm[i]=='1'||imm[i]=='2'||imm[i]=='3'||imm[i]=='4'||imm[i]=='5'||imm[i]=='6'||imm[i]=='7'||imm[i]=='8'||imm[i]=='9'||imm[i]=='-'){
+                     kk+=imm[i];
+                 }
+
+             }
+             imm = kk;
+             ll=imm.size();
+
+              int finalnum=0;
+              if(imm[0]=='-')
+              {
+                  int arr[ll-1];
+                  for(int i=1;i<ll;i++)
+                  {
+                      arr[ll-i-1]=imm[i]-48;
+                  }
+                  int mmm=1;
+                  for(int i=0;i<ll-1;i++)
+                  {
+                      finalnum=finalnum+arr[i]*mmm;
+                      mmm=10*mmm;
+                  }
+              }
+              else
+              {
+                  int arr[ll];
+                  for(int i=0;i<ll;i++)
+                  {
+                      arr[ll-i-1]=imm[i]-48;
+                  }
+                  int mmm=1;
+                  for(int i=0;i<ll;i++)
+                  {
+                      finalnum=finalnum+arr[i]*mmm;
+                      mmm=10*mmm;
+                  }
+              }
+
+              //cout<<finalnum;
+              int r1,r2;
+              r1=identity(rs1);
+              r2=identity(rs2);
+              string bin1,bin2,bin;
+              bin=decToBinary(r1);
+              bin1=decToBinary(r2);
+              if(imm[0]=='-')
+              {
+                  int swapping=0;
+                  bin2=decToBinary12(finalnum);
+                  for(int i=bin2.length()-1;i>=0;i--)
+                  {
+                      if(swapping==1)
+                      {
+                          if(bin2[i]=='1')
+                          {
+                              bin2[i]='0';
+                              continue;
+                          }
+                          if(bin2[i]=='0')
+                          {
+                              bin2[i]='1';
+                              continue;
+                          }
+                      }
+                      if(bin2[i]=='1')
+                      {
+                          swapping=1;
+                      }
+
+                  }
+              }
+              else
+              {
+                  bin2=decToBinary12(finalnum);
+              }
+             string func3,opcode;
+             if(word=="sb")
+             {
+                 func3="000";
+                 opcode="0100011";
+             }
+             if(word=="sw")
+             {
+                 func3="010";
+                 opcode="0100011";
+             }
+             if(word=="sd")
+             {
+                 func3="011";
+                 opcode="0100011";
+             }
+             if(word=="sh")
+             {
+                 func3="100";
+                 opcode="0100011";
+             }
+            //bin  for r1, bin1 for r2, and bin2 for final num
+             string xx= s_code(bin2,bin,bin1,func3,opcode);
+             string output=bintohex(xx);
+             word="";
+             string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+             myfile<<" ";
+             myfile<<output<<endl;
+             count=count+4;
+
+         }
+
+         rd="";rs1="";rs2="";imm="";
+         xyxy=0;
+
+         if(word=="addi"||word=="andi"||word=="ori")
+        {
+            int error2=0;
+            string error_string="";
+            for(int i=where_first_break-4;i<line.length();i++) error_string=error_string+line[i];
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]=='x') error2++;
+                if(error2==3)
+                {
+                    break;
+                }
+            }
+            if(error2==3)
+            {
+                cout<<"Line no-"<<curr_line<<"   LINE-"<<error_string<<" "<<" invalid number at the position of immediate field.";
+                exit(0);
+            }
+            rd=""; rs1="";
+            int flag=0;
+            int index=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(flag==2) break;
+                 if(line[i]=='x')
+                 {
+                     for(int j=i+1;j<line.length();j++)
+                     {
+                         if(line[j]==',') break;
+                         if(flag==0) rd=rd+line[j];
+                         if(flag==1) rs1=rs1+line[j];
+
+                         index=j;
+                     }
+                     flag++;
+                 }
+            }
+            for(int i=index+2;i<line.length();i++)
+            {
+                if(line[i]==',') break;
+                imm=imm+line[i];
+            }
+            int ll=imm.length();
+
+            string kk="";
+            for(int i=0; i<ll; i++){
+                if(imm[i]=='0'||imm[i]=='1'||imm[i]=='2'||imm[i]=='3'||imm[i]=='4'||imm[i]=='5'||imm[i]=='6'||imm[i]=='7'||imm[i]=='8'||imm[i]=='9'||imm[i]=='-'){
+                    kk+=imm[i];
+                }
+
+            }
+            imm = kk;
+            ll=imm.size();
+
+            int finalnum=0;
+            if(imm[0]=='-')
+            {
+                int arr[ll-1];
+                for(int i=1;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll-1;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+            else
+            {
+                int arr[ll];
+                for(int i=0;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+            //cout<<finalnum;
+            if(finalnum<i_formatrange[0]||finalnum>i_formatrange[1])
+            {
+                cout<<"Line no.-"<<curr_line<<" Immediate Value out of range"<<endl;
+                exit(0);
+            }
+            int r1,r;
+            r1=identity(rs1);
+            r=identity(rd);
+            string bin1,bin2,bin;
+            bin=decToBinary(r1);
+
+            bin1=decToBinary(r);
+            if(imm[0]=='-')
+            {
+                int swapping=0;
+                bin2=decToBinary12(finalnum);
+                for(int i=bin2.length()-1;i>=0;i--)
+                {
+                    if(swapping==1)
+                    {
+                        if(bin2[i]=='1')
+                        {
+                            bin2[i]='0';
+                            continue;
+                        }
+                        if(bin2[i]=='0')
+                        {
+                            bin2[i]='1';
+                            continue;
+                        }
+
+                    }
+                    if(bin2[i]=='1')
+                    {
+                        swapping=1;
+                    }
+
+                }
+            }
+            else
+            {
+                bin2=decToBinary12(finalnum);
+            }
+
+
+            //cout<<"  "<<bin2<<endl;
+
+            string func3,opcode;
+            if(word=="addi")
+            {
+                func3="000";
+                opcode="0010011";
+            }
+            if(word=="ori")
+            {
+                func3="110";
+                opcode="0010011";
+            }
+            if(word=="andi")
+            {
+                func3="111";
+                opcode="0010011";
+            }
+            string xx=i_code(bin2,bin,func3,bin1,opcode);
+            string output=bintohex(xx);
+            word="";
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+        }
+
+        rd="";rs1="";rs2="";imm="";
+        xyxy=0;
+
+        if(word=="lb"||word=="ld"||word=="lh"||word=="lw"||word=="jalr")
+        {
+            if(word=="ld")
+            {
+                cout<<"Command Not Supported"<<endl;
+                exit(0);
+            }
+
+            string error_line="";
+            if(word=="jalr"){
+            for(int i=where_first_break-4;i<line.length();i++) error_line=error_line+line[i];}
+            else
+            {
+                for(int i=where_first_break-2;i<line.length();i++) error_line=error_line+line[i];
+            }
+            int error1=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]=='(')
+                {
+                    error1=1;
+                    break;
+                }
+            }
+            if(error1==0)
+            {
+                cout<<"Line no-"<<curr_line<<"   LINE-"<<error_line<<" "<<" was given no offset/immediate field.";
+                exit(0);
+            }
+
+            int flag=0;
+            int index=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(flag==2) break;
+                 if(line[i]=='x')
+                 {
+                     for(int j=i+1;j<line.length();j++)
+                     {
+                         if(line[j]==',') break;
+                         if(flag==0) rd=rd+line[j];
+                         index=j;
+                     }
+                     flag++;
+                     if(flag==1) break;
+                 }
+            }
+
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]==',')
+                {
+                    for(int j=i+1;i<line.length();j++)
+                    {
+                        //cout<<line[j]<<endl;
+                        if(line[j]=='(')
+                        {
+                            error1=1;
+                            break;
+                        }
+                        imm=imm+line[j];
+                    }
+                    flag++;
+                    if(flag==2)break;
+                }
+            }
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(line[i]=='(')
+                {
+                    for(int j=i+2;j<line.length();j++)
+                    {
+                        if(line[j]==')') break;
+                        rs1=rs1+line[j];
+                    }
+                    flag++;
+                    if(flag==3) break;
+                }
+            }
+            int ll=imm.length();
+
+            string kk="";
+            for(int i=0; i<ll; i++){
+                if(imm[i]=='0'||imm[i]=='1'||imm[i]=='2'||imm[i]=='3'||imm[i]=='4'||imm[i]=='5'||imm[i]=='6'||imm[i]=='7'||imm[i]=='8'||imm[i]=='9'||imm[i]=='-'){
+                    kk+=imm[i];
+                }
+
+            }
+            imm = kk;
+            ll=imm.size();
+
+            int finalnum=0;
+            if(imm[0]=='-')
+            {
+                int arr[ll-1];
+                for(int i=1;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll-1;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+            else
+            {
+                int arr[ll];
+                for(int i=0;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+
+            //cout<<finalnum;
+            int r1,r;
+            r1=identity(rs1);
+            r=identity(rd);
+            string bin1,bin2,bin;
+            bin=decToBinary(r1);
+
+            bin1=decToBinary(r);
+            if(imm[0]=='-')
+            {
+                int swapping=0;
+                bin2=decToBinary12(finalnum);
+                for(int i=bin2.length()-1;i>=0;i--)
+                {
+                    if(swapping==1)
+                    {
+                        if(bin2[i]=='1')
+                        {
+                            bin2[i]='0';
+                            continue;
+                        }
+                        if(bin2[i]=='0')
+                        {
+                            bin2[i]='1';
+                            continue;
+                        }
+                    }
+                    if(bin2[i]=='1')
+                    {
+                        swapping=1;
+                    }
+
+                }
+            }
+            else
+            {
+                bin2=decToBinary12(finalnum);
+            }
+            string func3,opcode;
+            if(word=="lb")
+            {
+                func3="000";
+                opcode="0000011";
+            }
+            if(word=="ld")
+            {
+                func3="011";
+                opcode="0000011";
+            }
+            if(word=="lh")
+            {
+                func3="001";
+                opcode="0000011";
+            }
+            if(word=="lw")
+            {
+                func3="010";
+                opcode="0000011";
+            }
+            if(word=="jalr")
+            {
+                func3="000";
+                opcode="1100111";
+            }
+            string xx=i_code(bin2,bin,func3,bin1,opcode);
+            string output=bintohex(xx);
+            word="";
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+        }
+
+        rd="";rs1="";rs2="";imm="";
+        xyxy=0;
+
+        if(word=="auipc"||word=="lui")
+        {
+            rd=""; rs1="";
+            int flag=0;
+            int index=0;
+            for(int i=where_first_break;i<line.length();i++)
+            {
+                if(flag==1) break;
+                 if(line[i]=='x')
+                 {
+                     for(int j=i+1;j<line.length();j++)
+                     {
+                         if(line[j]==',') break;
+                         if(flag==0) rd=rd+line[j];
+                         index=j;
+                     }
+                     flag++;
+                 }
+            }
+            for(int i=index+2;i<line.length();i++)
+            {
+                if(line[i]==',') break;
+                imm=imm+line[i];
+            }
+            int ll=imm.size(); //cout<<"   "<<"im -> "<<imm<<endl;
+            string kk="";
+            for(int i=0; i<ll; i++){
+                if(imm[i]=='0'||imm[i]=='1'||imm[i]=='2'||imm[i]=='3'||imm[i]=='4'||imm[i]=='5'||imm[i]=='6'||imm[i]=='7'||imm[i]=='8'||imm[i]=='9'||imm[i]=='-'){
+                    kk+=imm[i];
+                }
+
+            }
+            imm = kk;
+            ll=imm.size();
+
+
+            int finalnum=0;
+
+
+            if(imm[0]=='-')
+            {
+                int arr[ll-1];
+                for(int i=1;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll-1;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+            else
+            {
+                int arr[ll];
+                for(int i=0;i<ll;i++)
+                {
+                    arr[ll-i-1]=imm[i]-48;
+                }
+                int mmm=1;
+                for(int i=0;i<ll;i++)
+                {
+                    finalnum=finalnum+arr[i]*mmm;
+                    mmm=10*mmm;
+                }
+            }
+            //cout<<finalnum;
+            int r;
+            r=identity(rd);
+            string bin1,bin2,bin;
+            bin1=decToBinary(r);
+            if(imm[0]=='-')
+            {
+                int swapping=0;
+                bin2=decToBinary32(finalnum);
+                for(int i=bin2.length()-1;i>=0;i--)
+                {
+                    if(swapping==1)
+                    {
+                        if(bin2[i]=='1')
+                        {
+                            bin2[i]='0';
+                            continue;
+                        }
+                        if(bin2[i]=='0')
+                        {
+                            bin2[i]='1';
+                            continue;
+                        }
+
+                    }
+                    if(bin2[i]=='1')
+                    {
+                        swapping=1;
+                    }
+
+                }
+            }
+            else
+            {
+                bin2=decToBinary32(finalnum);
+            }
+            //cout<<"  "<<bin2<<endl;
+            string opcode;
+            if(word=="auipc")
+            {
+                opcode="0010111";
+            }
+            if(word=="lui")
+            {
+                opcode="0110111";
+            }
+            string xx=u_code(bin2,bin1,opcode);
+            string output=bintohex(xx);
+            word="";
+            //myfile<<extra;
+            //myfile<<count;
+            string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+            myfile<<" ";
+            myfile<<output<<endl;
+            count=count+4;
+        }
+
+    }
+
+    //myfile<<extra;
+    //myfile<<count;
+    string rrrrr="";
+    rrrrr=dec_to_hexdecimal(count);
+    myfile<<rrrrr;
+    myfile<<" ";
+    myfile<<"END PROGRAM"<<endl;
+    count=count+4;
+
+    int indexi=0;
+    int ccount=0;
+    if(memory_array[0][0]==-1)
+    {
+        exit(0);
+    }
+    while(1)
+    {
+        if(memory_array[indexi][1]==-1) break;
+        //cout<<ccount<<"hi"<<endl;
+        string printing;
+        printing=decimaltobinaryin32bit(ccount);
+        string added_string;
+        added_string=addBinary(printing ,printing);
+        string final_pritningoutput;
+        final_pritningoutput=bintohex(added_string);
+        int decimal_final_number = memory_array[indexi][0];
+        stringstream my_ss;
+        my_ss << hex << decimal_final_number;
+        string res = my_ss.str();
+        //myfile<<extra;
+        myfile<<final_pritningoutput;
+        myfile<<" ";
+        myfile<<extra;
+        myfile<<res<<endl;
+
+        ccount=ccount+memory_array[indexi][1];
+        indexi++;
+    }
+    myfile.close();
+    fin.close();
+
+    return 0;
+}

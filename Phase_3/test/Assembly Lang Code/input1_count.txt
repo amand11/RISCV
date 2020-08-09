@@ -1,0 +1,13 @@
+.data
+var1: .word 11
+.text
+lui x11,65536
+lw x1,0(x11)
+addi x12,x12,0
+addi x10,x0,2
+Loop: beq x1,x0,End
+andi x3,x1,1
+add x12,x12,x3
+div x1,x1,x10
+beq x0,x0,Loop
+End:

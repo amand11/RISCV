@@ -1,0 +1,84 @@
+================================================
+Functional Simulator for RISCV Processor
+================================================
+
+README
+
+CS-204 project, RISC-V SIMULATOR, Phase 2, GROUP :-
+Languages:- C++
+
+TEAM MEMBERS:- 
+        *Prateek Saini (2018CSB1114)
+	*Naveen Yadav  (2018CSB1106)
+	*Aman Dhawan   (2018CSB1070)
+	*Vikram Singh  (2018CSB1194)
+	*Vishal Yadav  (2018CSB1128)
+
+Phase 2:-
+Implemented data path and control paths to run the Instructions.
+Implemented all stages i.e. Fetch, Execute, Decode, Memory, RegWrite
+Implemented memory unit and register files for the same
+
+Table of contents
+1. Directory Structure
+2. How to execute
+
+
+Directory Structure:
+--------------------
+CS112-Project
+  |
+  |- doc
+      |
+      |- design-doc.docx
+  |- src
+      |- main.cpp
+      |- example.txt
+
+  |- test
+      |- count.txt
+      |- bubblesort.txt
+      |- fibonacci.txt
+      |- palindrome.txt
+      |- factorial.txt
+      |- Assembly Lang Code(Contains assembly code of above program)
+  |- Project-statement.txt
+  |- README
+     
+
+
+HOW TO RUN:-
+------------
+	Build the Program	
+		$cd src
+		$make
+	
+	Write Your input in .mc filed named "example.txt"	
+
+        On the terminal :-
+        g++ main.cpp
+        ./a.out
+	You will get your desired output in terminal.
+
+
+Work by Indviduals:-
+------------
+
+Prateek Saini -> I and R format
+Naveen Yadav -> I, R , SB and UJ format
+	     -> overall structure of code(main.cpp)
+	     -> .text part execution 
+Aman Dhawan -> U and S format , 
+            -> .data part exection and Documentation .
+Vishal Yadav -> UJ and SB format
+
+Algorithm and Methodology -> See Design Document
+
+Assumption:-
+1)ld and sd is not supported and will throw error with message that they are not available.
+2)Input document("example.txt") should not have extra and empty line at the end.
+3)Structure of input files should be
+	I).text with program counter and machine code separated by single space. Format is "Program-counter machine-code", both machine code and program counter are in hex
+	II)The to end .text, well have Program counter and string("END PROGRAM"), serrated by single space.
+	III)Then .Data component should be there, and last data type should be word(because of some limitation). format is “Location data”, location and data is in hex
+
