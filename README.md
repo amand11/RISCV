@@ -1,6 +1,10 @@
 # RISCV
 RISC-V simulator
 
+CS204: Computer Architecture Project under Dr.TV Kalyan
+
+To Run:
+See Individual Readme of the various Phases.
 
 Phase 1 :-
 Assembly code to machine code conversion
